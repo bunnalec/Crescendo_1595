@@ -46,8 +46,8 @@ public class TeleopDrive extends Command {
     double rotationValue = MathUtil.applyDeadband(rotationSupplier.getAsDouble(), Constants.OperatorConstants.STICK_DEADBAND);
 
     drivetrainSubsystem.drive(
-      new Translation2d(translationValue, strafeValue).times(Constants.Swerve.maxSpeed),
-      rotationValue * Constants.Swerve.maxAngularVelocity,
+      new Translation2d(translationValue, strafeValue).times(Constants.SwerveConstants.maxSpeed),
+      rotationValue * Constants.SwerveConstants.maxAngularVelocity,
       !robotCentricSupplier.getAsBoolean(),
       true);
   }

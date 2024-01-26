@@ -31,17 +31,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     navx.reset();
 
     swerveModules = new SwerveModule[] {
-      new SwerveModule(0, Constants.Swerve.Mod0.constants),
-      new SwerveModule(1, Constants.Swerve.Mod1.constants),
-      new SwerveModule(2, Constants.Swerve.Mod2.constants),
-      new SwerveModule(3, Constants.Swerve.Mod3.constants)
+      new SwerveModule(0, Constants.SwerveConstants.Mod0.constants),
+      new SwerveModule(1, Constants.SwerveConstants.Mod1.constants),
+      new SwerveModule(2, Constants.SwerveConstants.Mod2.constants),
+      new SwerveModule(3, Constants.SwerveConstants.Mod3.constants)
     };
     
-    swerveDriveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+    swerveDriveOdometry = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
   }
   public void drive(Translation2d translation, double anglularVelocity, boolean fieldRelative, boolean isOpenLoop) {
     SwerveModuleState[] swerveModuleStates =
-      Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+      Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(
         fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(),
                 translation.getY(),
@@ -53,7 +53,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 translation.getY(),
                 anglularVelocity)
               );
-      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed);
 
       for (SwerveModule module : swerveModules) {
         module.setDesiredState(swerveModuleStates[module.moduleNumber], isOpenLoop);
@@ -62,7 +62,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   // Used by SwerveControllerCommand in Auto
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveConstants.maxSpeed);
 
     for (SwerveModule module : swerveModules) {
       module.setDesiredState(desiredStates[module.moduleNumber], false);
