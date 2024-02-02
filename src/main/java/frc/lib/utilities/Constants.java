@@ -27,8 +27,16 @@ public final class Constants {
 
   public static final class OperatorConstants {
 
-    public static final int DRIVER_CONTROLLER_PORT = 0;
-    public static final double STICK_DEADBAND = 0.1;
+    public static final int driverControllerPort = 0;
+    public static final double stickDeadband = 0.1;
+  }
+
+  //Hardware IDs for parts on robot (excluding drivetrain).
+  public static final class hardwareID {
+    public static final int leftClimberForwardChannel = 0;
+    public static final int leftClimberReverseChannel = 1;
+    public static final int rightClimberForwardChannel = 2;
+    public static final int rightClimberReverseChannel = 3;
   }
 
   

@@ -7,14 +7,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.utilities.Constants.hardwareID;
 
-public class ClimberSubsystem extends SubsystemBase{
+public class PneumaticsSubsystem extends SubsystemBase{
 
     DoubleSolenoid leftClimber, rightClimber;
     Compressor compressor;
 
-    public ClimberSubsystem() {
-        leftClimber = new DoubleSolenoid(PneumaticsModuleType.REVPH, hardwareID.LEFT_CLIMBER_FORWARD_CHANNEL, hardwareID.LEFT_CLIMBER_REVERSE_CHANNEL);
-        rightClimber = new DoubleSolenoid(PneumaticsModuleType.REVPH, hardwareID.RIGHT_CLIMBER_FORWARD_CHANNEL, hardwareID.RIGHT_CLIMBER_REVERSE_CHANNEL);
+    public PneumaticsSubsystem() {
+        leftClimber = new DoubleSolenoid(PneumaticsModuleType.REVPH, hardwareID.leftClimberForwardChannel, hardwareID.leftClimberReverseChannel);
+        rightClimber = new DoubleSolenoid(PneumaticsModuleType.REVPH, hardwareID.rightClimberForwardChannel, hardwareID.rightClimberReverseChannel);
 
         compressor = new Compressor(PneumaticsModuleType.REVPH);
         compressor.enableDigital();

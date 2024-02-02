@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.lib.utilities.Constants;
+import frc.lib.utilities.Constants.*;
 
 import frc.robot.commands.TeleopDrive;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
 
-  private final Joystick driver = new Joystick(Constants.OperatorConstants.DRIVER_CONTROLLER_PORT);
+  private final Joystick driver = new Joystick(OperatorConstants.driverControllerPort);
 
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
