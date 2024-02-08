@@ -4,7 +4,20 @@
 
 package frc.robot;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+
+import com.revrobotics.ColorSensorV3;
+
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.utilities.swerve.CTREConfigs;
@@ -16,6 +29,7 @@ import frc.lib.utilities.swerve.CTREConfigs;
  * project.
  */
 public class Robot extends TimedRobot {
+  public ArrayList<PathweaverPath> pathWeaverTrajectories = new ArrayList<PathweaverPath>();
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
   private Command m_autonomousCommand;
@@ -28,10 +42,52 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    //Loads PathWeaver Autonomous Trajectories (takes more than one loop iteration so is done here to avoid conflict).
+    initializePathweaverTrajectories();
+    SmartDashboard.putNumber("Trajectories", pathWeaverTrajectories.size());
+    SmartDashboard.putString("1st Trajectory", pathWeaverTrajectories.get(0).label);
+    SmartDashboard.putString("2nd Trajectory", pathWeaverTrajectories.get(1).label);
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
   }
+
+  private void initializePathweaverTrajectories() {
+    //Makes a list of files in the pathweaver output directory.
+    java.io.File trajectoryDirectory = new java.io.File(Filesystem.getDeployDirectory() + "/output");
+    File[] listOfFiles = trajectoryDirectory.listFiles();
+
+    //If no files exist in the directory (no paths), then exit.
+    if (listOfFiles.length == 0) {
+      return;
+    }
+
+    String fileName;
+    String trajectoryJSON = new String();
+    Path trajectoryPath;
+    Trajectory trajectory;
+
+    //Loops through every file in the directory and converts them into a trajectory. Stores the trajectory in a public list.
+    for (int i = 0; i < listOfFiles.length; i++) {
+      try {
+        fileName = listOfFiles[i].getName();
+        trajectoryJSON = "output/" + fileName;
+  
+        trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+        trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+
+        PathweaverPath pathweaverPath = new PathweaverPath(fileName, trajectory);
+
+        pathWeaverTrajectories.add(pathweaverPath);
+      }
+
+      catch (IOException exception) {
+        DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, exception.getStackTrace());
+        break;
+      }
+      }
+    }
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
@@ -106,3 +162,14 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {}
 }
+
+class PathweaverPath
+ {
+  String label;
+  Trajectory trajectory;
+
+  public PathweaverPath(String label, Trajectory trajectory) {
+    this.label = label;
+    this.trajectory = trajectory;
+  }
+ }

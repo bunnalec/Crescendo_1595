@@ -62,7 +62,7 @@ public class SwerveModule {
             driveMotor.setControl(driveDutyCycle);
         }
         else {
-            driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, SwerveConstants.WHEEL_CIRCUMFERENCE);
+            driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, SwerveConstants.wheelCircumference);
             driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
             driveMotor.setControl(driveVelocity);
         }
@@ -79,14 +79,14 @@ public class SwerveModule {
 
     public SwerveModuleState getState(){
         return new SwerveModuleState(
-            Conversions.RPSToMPS(driveMotor.getVelocity().getValue(), SwerveConstants.WHEEL_CIRCUMFERENCE), 
+            Conversions.RPSToMPS(driveMotor.getVelocity().getValue(), SwerveConstants.wheelCircumference), 
             Rotation2d.fromRotations(angleMotor.getPosition().getValue())
         );
     }
 
     public SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
-            Conversions.rotationsToMeters(driveMotor.getPosition().getValue(), SwerveConstants.WHEEL_CIRCUMFERENCE), 
+            Conversions.rotationsToMeters(driveMotor.getPosition().getValue(), SwerveConstants.wheelCircumference), 
             Rotation2d.fromRotations(angleMotor.getPosition().getValue())
         );
     }

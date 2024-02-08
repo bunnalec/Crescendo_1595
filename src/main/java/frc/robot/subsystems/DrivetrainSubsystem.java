@@ -17,7 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.utilities.Constants;
+import frc.lib.utilities.Constants.SwerveConstants;
 import frc.lib.utilities.swerve.SwerveModule;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -31,17 +31,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
     navx.reset();
 
     swerveModules = new SwerveModule[] {
-      new SwerveModule(0, Constants.SwerveConstants.Mod0.constants),
-      new SwerveModule(1, Constants.SwerveConstants.Mod1.constants),
-      new SwerveModule(2, Constants.SwerveConstants.Mod2.constants),
-      new SwerveModule(3, Constants.SwerveConstants.Mod3.constants)
+      new SwerveModule(0, SwerveConstants.Mod0.constants),
+      new SwerveModule(1, SwerveConstants.Mod1.constants),
+      new SwerveModule(2, SwerveConstants.Mod2.constants),
+      new SwerveModule(3, SwerveConstants.Mod3.constants)
     };
     
-    swerveDriveOdometry = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
+    swerveDriveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
   }
+
   public void drive(Translation2d translation, double anglularVelocity, boolean fieldRelative, boolean isOpenLoop) {
     SwerveModuleState[] swerveModuleStates =
-      Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(
+      SwerveConstants.swerveKinematics.toSwerveModuleStates(
         fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(),
                 translation.getY(),
@@ -53,7 +54,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 translation.getY(),
                 anglularVelocity)
               );
-      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed);
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
       for (SwerveModule module : swerveModules) {
         module.setDesiredState(swerveModuleStates[module.moduleNumber], isOpenLoop);
@@ -62,7 +63,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   // Used by SwerveControllerCommand in Auto
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveConstants.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxSpeed);
 
     for (SwerveModule module : swerveModules) {
       module.setDesiredState(desiredStates[module.moduleNumber], false);
@@ -120,15 +121,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
   }
 
-  @Override
-  public void periodic() {
-    swerveDriveOdometry.update(getGyroYaw(), getModulePositions());
-
+  private void telemetry() {
     for(SwerveModule module : swerveModules){
             SmartDashboard.putNumber("Module " + module.moduleNumber + " CANcoder", module.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Module " + module.moduleNumber + " Angle", module.getPosition().angle.getDegrees());
-            SmartDashboard.putNumber("Module " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);    
-        }
+            SmartDashboard.putNumber("Module " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
+          }     
+    SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+  }
+
+  @Override
+  public void periodic() {
+    swerveDriveOdometry.update(getGyroYaw(), getModulePositions());
+    telemetry();
   }
 
   @Override

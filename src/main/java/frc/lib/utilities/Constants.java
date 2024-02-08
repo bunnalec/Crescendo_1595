@@ -37,6 +37,13 @@ public final class Constants {
     public static final int leftClimberReverseChannel = 1;
     public static final int rightClimberForwardChannel = 2;
     public static final int rightClimberReverseChannel = 3;
+    public static final int noteAimerForwardChannel = 4;
+    public static final int noteAimerReverseChannel = 5;
+
+    public static final int indexerMotorCANId = 1; //Edit
+    public static final int bottomSpinnerMotorCANId = 2;
+    public static final int middleSpinnerMotorCANId = 3;
+    public static final int topSpinnerMotorCANId = 4;
   }
 
   

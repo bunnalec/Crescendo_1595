@@ -3,22 +3,19 @@ package frc.robot.commands;
 import frc.lib.utilities.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-import java.util.List;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class AutoDrive extends SequentialCommandGroup {
     public AutoDrive(DrivetrainSubsystem drivetrainSubsystem, Trajectory trajectory){
+
+        //Below code was part of BaseTalonFXSwerve. If we go with PathWeaver, we do not need to generate our own trajectories like this.
+        //If we go with a 3rd party option like PathPlanner, more modifications will be needed due to them using their own trajectory class.
+
         /* 
         TrajectoryConfig config =
             new TrajectoryConfig(
