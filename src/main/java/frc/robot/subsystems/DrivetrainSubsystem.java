@@ -14,16 +14,36 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.math.Conversions;
 import frc.lib.utilities.Constants.SwerveConstants;
+import frc.lib.utilities.swerve.COTSTalonFXSwerveConstants.SDS.MK4i;
 import frc.lib.utilities.swerve.SwerveModule;
 
 public class DrivetrainSubsystem extends SubsystemBase {
   public SwerveDriveOdometry swerveDriveOdometry;
   public SwerveModule[] swerveModules;
   public AHRS navx;
+  private double highestMeasuredVelocity = 0;
+
+  //System Identification
+
+  private final MutableMeasure<Voltage> appliedVoltage = MutableMeasure.mutable(Units.Volts.of(0));
+  private final MutableMeasure<Distance> distance = MutableMeasure.mutable(Units.Meters.of(0));
+  private final MutableMeasure<Velocity<Distance>> velocity = MutableMeasure.mutable(Units.MetersPerSecond.of(0));
+
+  private SysIdRoutine sysIdRoutine;
 
   public DrivetrainSubsystem() {
     //Initializes Gyroscope (Measures Yaw/Rotation Angle), swerve modules, and swerve odometry.
@@ -38,6 +58,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     };
     
     swerveDriveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
+    createSytemIdentificationRoutine();
   }
 
   public void drive(Translation2d translation, double anglularVelocity, boolean fieldRelative, boolean isOpenLoop) {
@@ -126,8 +147,41 @@ public class DrivetrainSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Module " + module.moduleNumber + " CANcoder", module.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Module " + module.moduleNumber + " Angle", module.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Module " + module.moduleNumber + " Velocity", module.getState().speedMetersPerSecond);
+            if (module.getState().speedMetersPerSecond > highestMeasuredVelocity) {
+              highestMeasuredVelocity = module.getState().speedMetersPerSecond;
+            }
+            SmartDashboard.putNumber("Module " + module.moduleNumber + "MaximumSpeed", highestMeasuredVelocity);
           }     
     SmartDashboard.putNumber("Heading", getHeading().getDegrees());
+  }
+
+  // Makes System Identification Routine for Mathematical Analysis. Runs two tests that apply specific voltages to motors and log their positions and velocities.
+  private void createSytemIdentificationRoutine() {
+    sysIdRoutine = new SysIdRoutine(new SysIdRoutine.Config(),
+    new SysIdRoutine.Mechanism(
+      (Measure<Voltage> volts) -> {
+        for(SwerveModule module : swerveModules) {
+          module.driveMotor.setVoltage(volts.in(Units.Volts));
+        }},
+        
+      log -> {
+        for (SwerveModule module : swerveModules) {
+          log.motor(Integer.toString(module.moduleNumber))
+            .voltage(appliedVoltage.mut_replace(module.driveMotor.getMotorVoltage().getValueAsDouble() * RobotController.getBatteryVoltage(), Units.Volts))
+            .linearPosition(distance.mut_replace(Conversions.rotationsToMeters(module.driveMotor.getPosition().getValueAsDouble() * MK4i.driveRatios.L1, edu.wpi.first.math.util.Units.inchesToMeters(4.0) * Math.PI),Units.Meters))
+            .linearVelocity(velocity.mut_replace(module.driveMotor.getVelocity().getValueAsDouble(), Units.MetersPerSecond));
+        }
+      },
+      
+      this));
+  }
+
+  // Drive System Identification Commands for Testing and Analysis
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysIdRoutine.quasistatic(direction);
+  }
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysIdRoutine.dynamic(direction);
   }
 
   @Override

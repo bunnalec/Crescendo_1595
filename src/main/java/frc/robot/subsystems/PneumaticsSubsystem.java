@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.utilities.Constants.hardwareID;
+import frc.lib.utilities.Constants.HardwareID;
 
 public class PneumaticsSubsystem extends SubsystemBase{
 
@@ -16,9 +16,9 @@ public class PneumaticsSubsystem extends SubsystemBase{
 
 
     public PneumaticsSubsystem() {
-        leftClimber = new DoubleSolenoid(PneumaticsModuleType.REVPH, hardwareID.leftClimberForwardChannel, hardwareID.leftClimberReverseChannel);
-        rightClimber = new DoubleSolenoid(PneumaticsModuleType.REVPH, hardwareID.rightClimberForwardChannel, hardwareID.rightClimberReverseChannel);
-        noteAimer = new DoubleSolenoid(PneumaticsModuleType.REVPH, hardwareID.noteAimerForwardChannel, hardwareID.noteAimerReverseChannel);
+        leftClimber = new DoubleSolenoid(PneumaticsModuleType.REVPH, HardwareID.leftClimberForwardChannel, HardwareID.leftClimberReverseChannel);
+        rightClimber = new DoubleSolenoid(PneumaticsModuleType.REVPH, HardwareID.rightClimberForwardChannel, HardwareID.rightClimberReverseChannel);
+        noteAimer = new DoubleSolenoid(PneumaticsModuleType.REVPH, HardwareID.noteAimerForwardChannel, HardwareID.noteAimerReverseChannel);
 
 
         compressor = new Compressor(PneumaticsModuleType.REVPH);

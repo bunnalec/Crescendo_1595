@@ -5,16 +5,16 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.utilities.Constants.hardwareID;
+import frc.lib.utilities.Constants.HardwareID;
 
 public class LauncherSubsystem extends SubsystemBase{
 
     TalonFX bottomSpinner, middleSpinner, topSpinner;
     
     public LauncherSubsystem() {
-        bottomSpinner = new TalonFX(hardwareID.bottomSpinnerMotorCANId);
-        middleSpinner = new TalonFX(hardwareID.middleSpinnerMotorCANId);
-        topSpinner = new TalonFX(hardwareID.topSpinnerMotorCANId);
+        bottomSpinner = new TalonFX(HardwareID.bottomSpinnerMotorCANId);
+        middleSpinner = new TalonFX(HardwareID.middleSpinnerMotorCANId);
+        topSpinner = new TalonFX(HardwareID.topSpinnerMotorCANId);
 
         bottomSpinner.setNeutralMode(NeutralModeValue.Brake);
         middleSpinner.setNeutralMode(NeutralModeValue.Brake);

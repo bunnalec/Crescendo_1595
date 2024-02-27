@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.utilities.Constants.hardwareID;
+import frc.lib.utilities.Constants.HardwareID;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -19,7 +19,7 @@ public class IndexerSubsystem extends SubsystemBase{
     boolean noteLoaded;
 
     public IndexerSubsystem() {
-        indexerMotor = new TalonFX(hardwareID.indexerMotorCANId);
+        indexerMotor = new TalonFX(HardwareID.indexerMotorCANId);
         indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         noteLoaded = false;

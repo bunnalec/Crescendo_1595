@@ -18,8 +18,8 @@ public class SwerveModule {
     public int moduleNumber;
     private Rotation2d angleOffset;
 
-    private TalonFX angleMotor;
-    private TalonFX driveMotor;
+    public TalonFX angleMotor;
+    public TalonFX driveMotor;
     private CANcoder angleEncoder;
 
     private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(SwerveConstants.driveKS, SwerveConstants.driveKV, SwerveConstants.driveKA);
