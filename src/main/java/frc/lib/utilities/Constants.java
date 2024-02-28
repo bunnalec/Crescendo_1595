@@ -30,7 +30,35 @@ public final class Constants {
 
     public static final int driverControllerPort = 0;
     public static final double stickDeadband = 0.1;
-  }
+    // Button names
+    public static final int backLeftSingleSwitch = 1;
+    public static final int topLeftToggleBack = 2;
+    public static final int topLeftToggleForward = 3;
+    public static final int topLeftButton = 13; 
+    public static final int frontFarLeftToggleUp = 4;
+    public static final int frontFarLeftToggleDown = 5;
+    public static final int frontNearLeftToggleUp = 6;
+    public static final int frontNearLeftToggleDown = 7;
+    public static final int frontRightToggleUp = 9;
+    public static final int frontRightToggleDown = 8; 
+    public static final int topRightToggleBack = 11;
+    public static final int topRightToggleForward = 10;
+    public static final int backRightSingleSwitch = 12;
+    public static final int resetButton = 14;
+    public static final int cancelButton = 15;
+    public static final int rollerButton = 16;
+    public static final int rollerLeft = 17;
+    public static final int rollerRight = 18;
+    public static final int frontLeftBottomSwitchLeft = 19;
+    public static final int frontLeftBottomSwitchRight = 20;
+    public static final int frontRightBottomSwitchLeft = 23;
+    public static final int frontRightBottomSwitchRight = 24;
+    public static final int frontLeftMiddleSwitchUp = 22;
+    public static final int frontLeftMiddleSwitchDown = 21;
+    public static final int frontRightMiddleSwitchUp = 26;
+    public static final int frontRightMiddleSwitchDown = 25;  
+    
+}
 
   //Hardware IDs for parts on robot (excluding drivetrain).
   public static final class HardwareID {
