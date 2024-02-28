@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.math.Conversions;
 import frc.lib.utilities.Constants.SwerveConstants;
-import frc.lib.utilities.swerve.COTSTalonFXSwerveConstants.SDS.MK4i;
+import frc.lib.utilities.swerve.COTSTalonFXSwerveConstants.SDS.MK4;
 import frc.lib.utilities.swerve.SwerveModule;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -157,7 +157,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   // Makes System Identification Routine for Mathematical Analysis. Runs two tests that apply specific voltages to motors and log their positions and velocities.
   private void createSytemIdentificationRoutine() {
-    sysIdRoutine = new SysIdRoutine(new SysIdRoutine.Config(),
+    sysIdRoutine = new SysIdRoutine(new SysIdRoutine.Config(Units.Volts.per(Units.Second).of(0.2), Units.Volts.of(1.4), Units.Seconds.of(5)),
     new SysIdRoutine.Mechanism(
       (Measure<Voltage> volts) -> {
         for(SwerveModule module : swerveModules) {
@@ -168,7 +168,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         for (SwerveModule module : swerveModules) {
           log.motor(Integer.toString(module.moduleNumber))
             .voltage(appliedVoltage.mut_replace(module.driveMotor.getMotorVoltage().getValueAsDouble() * RobotController.getBatteryVoltage(), Units.Volts))
-            .linearPosition(distance.mut_replace(Conversions.rotationsToMeters(module.driveMotor.getPosition().getValueAsDouble() * MK4i.driveRatios.L1, edu.wpi.first.math.util.Units.inchesToMeters(4.0) * Math.PI),Units.Meters))
+            .linearPosition(distance.mut_replace(Conversions.rotationsToMeters(module.driveMotor.getPosition().getValueAsDouble() * MK4.driveRatios.L1, edu.wpi.first.math.util.Units.inchesToMeters(4.0) * Math.PI),Units.Meters))
             .linearVelocity(velocity.mut_replace(module.driveMotor.getVelocity().getValueAsDouble(), Units.MetersPerSecond));
         }
       },

@@ -29,21 +29,23 @@ public final class Constants {
   public static final class OperatorConstants {
 
     public static final int driverControllerPort = 0;
+    public static final int operatorControllerPort = 1;
     public static final double stickDeadband = 0.1;
+    
     // Button names
     public static final int backLeftSingleSwitch = 1;
     public static final int topLeftToggleBack = 2;
     public static final int topLeftToggleForward = 3;
-    public static final int topLeftButton = 13; 
     public static final int frontFarLeftToggleUp = 4;
     public static final int frontFarLeftToggleDown = 5;
     public static final int frontNearLeftToggleUp = 6;
     public static final int frontNearLeftToggleDown = 7;
-    public static final int frontRightToggleUp = 9;
     public static final int frontRightToggleDown = 8; 
-    public static final int topRightToggleBack = 11;
+    public static final int frontRightToggleUp = 9;
     public static final int topRightToggleForward = 10;
+    public static final int topRightToggleBack = 11;
     public static final int backRightSingleSwitch = 12;
+    public static final int topLeftButton = 13; 
     public static final int resetButton = 14;
     public static final int cancelButton = 15;
     public static final int rollerButton = 16;
@@ -51,13 +53,12 @@ public final class Constants {
     public static final int rollerRight = 18;
     public static final int frontLeftBottomSwitchLeft = 19;
     public static final int frontLeftBottomSwitchRight = 20;
+    public static final int frontLeftMiddleSwitchDown = 21;
+    public static final int frontLeftMiddleSwitchUp = 22;
     public static final int frontRightBottomSwitchLeft = 23;
     public static final int frontRightBottomSwitchRight = 24;
-    public static final int frontLeftMiddleSwitchUp = 22;
-    public static final int frontLeftMiddleSwitchDown = 21;
-    public static final int frontRightMiddleSwitchUp = 26;
     public static final int frontRightMiddleSwitchDown = 25;  
-    
+    public static final int frontRightMiddleSwitchUp = 26;
 }
 
   //Hardware IDs for parts on robot (excluding drivetrain).
@@ -69,14 +70,14 @@ public final class Constants {
     public static final int noteAimerForwardChannel = 4;
     public static final int noteAimerReverseChannel = 5;
 
-    public static final int indexerMotorCANId = 15; //Edit
-    public static final int bottomSpinnerMotorCANId = 2;
-    public static final int middleSpinnerMotorCANId = 3;
-    public static final int topSpinnerMotorCANId = 4;
+    public static final int indexerMotorCANId = 18;
+    public static final int bottomSpinnerMotorCANId = 15;
+    public static final int middleSpinnerMotorCANId = 16;
+    public static final int topSpinnerMotorCANId = 17;
   }
 
   public static final class SystemIdentificationToggles {
-    public static final boolean driveSystemIdentification = true;
+    public static final boolean systemIdentification = false;
   }
   
   public static final class SwerveConstants {
@@ -141,9 +142,9 @@ public final class Constants {
   
          /* Swerve Profiling Values */
          /** Meters per Second */
-         public static final double maxSpeed = 4.5; //TODO: This must be tuned to specific robot
+         public static final double maxSpeed = 3.0; //TODO: This must be tuned to specific robot
          /** Radians per Second */
-         public static final double maxAngularVelocity = 10.0; //TODO: This must be tuned to specific robot
+         public static final double maxAngularVelocity = 8.0; //TODO: This must be tuned to specific robot
   
          /* Neutral Modes */
          public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -155,7 +156,7 @@ public final class Constants {
              public static final int driveMotorID = 3;
              public static final int angleMotorID = 4;
              public static final int canCoderID = 5;
-             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(24.609375);
+             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-101.601563);
              public static final SwerveModuleConstants constants = 
                  new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
          }
@@ -165,7 +166,7 @@ public final class Constants {
              public static final int driveMotorID = 6;
              public static final int angleMotorID = 7;
              public static final int canCoderID = 8;
-             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(301.2890625);
+             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-58.095703);
              public static final SwerveModuleConstants constants = 
                  new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
          }
@@ -175,7 +176,7 @@ public final class Constants {
              public static final int driveMotorID = 9;
              public static final int angleMotorID = 10;
              public static final int canCoderID = 11;
-             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(45.08514404296875);
+             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(48.603516);
              public static final SwerveModuleConstants constants = 
                  new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
          }
@@ -185,7 +186,7 @@ public final class Constants {
              public static final int driveMotorID = 12;
              public static final int angleMotorID = 13;
              public static final int canCoderID = 14;
-             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(78.75);
+             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-153.632813);
              public static final SwerveModuleConstants constants = 
                  new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
          }

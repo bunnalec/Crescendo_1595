@@ -8,41 +8,40 @@ import frc.lib.utilities.Constants;
 import frc.lib.utilities.Constants.*;
 
 import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.Index.IndexDirection;
+import frc.robot.commands.Launch.LaunchDirection;
+import frc.robot.commands.Index;
+import frc.robot.commands.Launch;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.LauncherSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
 public class RobotContainer {
   private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
+  private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
+  private final LauncherSubsystem launcherSubsystem = new LauncherSubsystem();
 
   private final Joystick driver = new Joystick(OperatorConstants.driverControllerPort);
+  private final Joystick operator = new Joystick(OperatorConstants.operatorControllerPort);
 
   private final int translationAxis = XboxController.Axis.kLeftY.value;
   private final int strafeAxis = XboxController.Axis.kLeftX.value;
   private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kStart.value);
   private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
-  //Drive System Identification
-  private final JoystickButton quasiForward = new JoystickButton(driver, XboxController.Button.kBack.value);
-  private final JoystickButton quasiBackward = new JoystickButton(driver, XboxController.Button.kStart.value);
+  private final JoystickButton launchDrop = new JoystickButton(operator, XboxController.Button.kX.value);
+  private final JoystickButton launchLow = new JoystickButton(operator, XboxController.Button.kA.value);
+  private final JoystickButton launchHigh = new JoystickButton(operator, XboxController.Button.kY.value);
 
-  private final JoystickButton dynamicForward = new JoystickButton(driver, XboxController.Button.kX.value);
-  private final JoystickButton dynamicBackward = new JoystickButton(driver, XboxController.Button.kB.value);
-
-
+  private final JoystickButton indexerIntake = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
+  private final JoystickButton indexerOuttake = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -52,7 +51,7 @@ public class RobotContainer {
           drivetrainSubsystem,
           () -> -driver.getRawAxis(translationAxis),
           () -> -driver.getRawAxis(strafeAxis),
-          () -> driver.getRawAxis(rotationAxis),
+          () -> -driver.getRawAxis(rotationAxis),
           () -> robotCentric.getAsBoolean()
         )
     );
@@ -61,24 +60,35 @@ public class RobotContainer {
     configureBindings();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
+
+    //The keybinds and commands for system identification only load if the mode is enabled in constants (for programming purposes).
+    if (Constants.SystemIdentificationToggles.systemIdentification) {
+      JoystickButton driveQuasiForward = new JoystickButton(driver, XboxController.Button.kBack.value);
+      JoystickButton driveQuasiBackward = new JoystickButton(driver, XboxController.Button.kStart.value);
+      JoystickButton driveDynamicForward = new JoystickButton(driver, XboxController.Button.kX.value);
+      JoystickButton driveDynamicBackward = new JoystickButton(driver, XboxController.Button.kB.value);
+
+
+      driveQuasiForward.whileTrue(drivetrainSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      driveQuasiBackward.whileTrue(drivetrainSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+      driveDynamicForward.whileTrue(drivetrainSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+      driveDynamicBackward.whileTrue(drivetrainSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      
+      //No Other Keybinds will Load in System Identification Mode, for no other keybinds will be assigned to actions.
+      return;
+    }
+
+    //Keybinds for... actually driving the robot in TeleOP.
     zeroGyro.onTrue(new InstantCommand(() -> drivetrainSubsystem.zeroHeading()));
 
-    if (Constants.SystemIdentificationToggles.driveSystemIdentification) {
-      quasiForward.whileTrue(drivetrainSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-      quasiBackward.whileTrue(drivetrainSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-      dynamicForward.whileTrue(drivetrainSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-      dynamicBackward.whileTrue(drivetrainSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    }
+    launchDrop.whileTrue(new Launch(launcherSubsystem, indexerSubsystem, LaunchDirection.DROP));
+    launchLow.whileTrue(new Launch(launcherSubsystem, indexerSubsystem, LaunchDirection.LOW));
+    launchHigh.whileTrue(new Launch(launcherSubsystem, indexerSubsystem, LaunchDirection.HIGH));
+
+    indexerIntake.whileTrue(new Index(indexerSubsystem, IndexDirection.INTAKE_RECKLESS)); //Reckless until sensor gets attatched.
+    indexerOuttake.whileTrue(new Index(indexerSubsystem, IndexDirection.OUTTAKE));
+
   }
 
   /**

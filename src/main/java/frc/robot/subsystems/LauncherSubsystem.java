@@ -22,16 +22,25 @@ public class LauncherSubsystem extends SubsystemBase{
     }
 
     public void spinLowerSpinners() {
-        bottomSpinner.set(1.0);
-        middleSpinner.set(-1.0);
+        bottomSpinner.set(0.5);
+        middleSpinner.set(0.5);
+    }
+
+    public void spinLowerSpinners(double speed) {
+        bottomSpinner.set(speed);
+        middleSpinner.set(speed);
     }
 
     public void spinUpperSpinners() {
-        middleSpinner.set(1.0);
-        topSpinner.set(-1.0);
+        middleSpinner.set(-0.3);
+        topSpinner.set(0.3);
     }
 
-    //Default Command
+    public void spinUpperSpinners(double speed) {
+    middleSpinner.set(-speed);
+    topSpinner.set(speed);
+    }
+
     public void stopSpinners() {
         bottomSpinner.set(0.0);
         middleSpinner.set(0.0);
