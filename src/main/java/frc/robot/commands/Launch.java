@@ -8,6 +8,8 @@ import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class Launch extends Command {
 
@@ -18,13 +20,11 @@ public class Launch extends Command {
   }
 
   private final LauncherSubsystem launcherSubsystem;
-  private final IndexerSubsystem indexerSubsystem;
   private final LaunchDirection direction;
 
-  public Launch(LauncherSubsystem launcherSubsystem, IndexerSubsystem indexerSubsystem, LaunchDirection direction) {
+  public Launch(LauncherSubsystem launcherSubsystem, LaunchDirection direction) {
     this.launcherSubsystem = launcherSubsystem;
-    this.indexerSubsystem = indexerSubsystem;
-    addRequirements(launcherSubsystem, indexerSubsystem);
+    addRequirements(launcherSubsystem);
 
     this.direction = direction;
   }
@@ -45,11 +45,12 @@ public class Launch extends Command {
         launcherSubsystem.spinUpperSpinners();
         break;
       case DROP:
-        launcherSubsystem.spinLowerSpinners(0.1);
+        launcherSubsystem.spinUpperSpinners(0.1);
         break;
       default: break;
     }
-    indexerSubsystem.indexNoteLaunch();
+    
+    //indexerSubsystem.indexNoteLaunch();
 
   }
 
@@ -57,6 +58,7 @@ public class Launch extends Command {
   @Override
   public void end(boolean interrupted) {
     launcherSubsystem.stopSpinners();
+    //indexerSubsystem.stopIndexer();
   }
 
   // Returns true when the command should end.

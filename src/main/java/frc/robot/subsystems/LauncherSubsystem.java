@@ -33,12 +33,12 @@ public class LauncherSubsystem extends SubsystemBase{
 
     public void spinUpperSpinners() {
         middleSpinner.set(-0.3);
-        topSpinner.set(0.3);
+        topSpinner.set(-0.3);
     }
 
     public void spinUpperSpinners(double speed) {
     middleSpinner.set(-speed);
-    topSpinner.set(speed);
+    topSpinner.set(-speed);
     }
 
     public void stopSpinners() {
@@ -49,6 +49,7 @@ public class LauncherSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+        telemetry();
     }
 
     public void telemetry() {

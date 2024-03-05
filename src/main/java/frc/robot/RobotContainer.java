@@ -4,20 +4,27 @@
 
 package frc.robot;
 
-import frc.lib.utilities.Constants;
 import frc.lib.utilities.Constants.*;
 
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.Index.IndexDirection;
 import frc.robot.commands.Launch.LaunchDirection;
+import frc.robot.commands.squences.LaunchSequence;
 import frc.robot.commands.Index;
-import frc.robot.commands.Launch;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -43,8 +50,12 @@ public class RobotContainer {
   private final JoystickButton indexerIntake = new JoystickButton(operator, XboxController.Button.kRightBumper.value);
   private final JoystickButton indexerOuttake = new JoystickButton(operator, XboxController.Button.kLeftBumper.value);
 
+  private final SendableChooser<Command> autoChooser;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    registerNamedCommands();
 
     drivetrainSubsystem.setDefaultCommand(
       new TeleopDrive(
@@ -56,6 +67,9 @@ public class RobotContainer {
         )
     );
 
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
     // Configure button bindings
     configureBindings();
   }
@@ -63,13 +77,14 @@ public class RobotContainer {
   private void configureBindings() {
 
     //The keybinds and commands for system identification only load if the mode is enabled in constants (for programming purposes).
-    if (Constants.SystemIdentificationToggles.systemIdentification) {
+    /*
+    if (Constants.SystemToggles.systemIdentification) {
       JoystickButton driveQuasiForward = new JoystickButton(driver, XboxController.Button.kBack.value);
       JoystickButton driveQuasiBackward = new JoystickButton(driver, XboxController.Button.kStart.value);
       JoystickButton driveDynamicForward = new JoystickButton(driver, XboxController.Button.kX.value);
       JoystickButton driveDynamicBackward = new JoystickButton(driver, XboxController.Button.kB.value);
-
-
+      
+      
       driveQuasiForward.whileTrue(drivetrainSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
       driveQuasiBackward.whileTrue(drivetrainSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
       driveDynamicForward.whileTrue(drivetrainSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
@@ -78,17 +93,22 @@ public class RobotContainer {
       //No Other Keybinds will Load in System Identification Mode, for no other keybinds will be assigned to actions.
       return;
     }
+    */
 
     //Keybinds for... actually driving the robot in TeleOP.
     zeroGyro.onTrue(new InstantCommand(() -> drivetrainSubsystem.zeroHeading()));
 
-    launchDrop.whileTrue(new Launch(launcherSubsystem, indexerSubsystem, LaunchDirection.DROP));
-    launchLow.whileTrue(new Launch(launcherSubsystem, indexerSubsystem, LaunchDirection.LOW));
-    launchHigh.whileTrue(new Launch(launcherSubsystem, indexerSubsystem, LaunchDirection.HIGH));
+    launchDrop.whileTrue(new LaunchSequence(launcherSubsystem, indexerSubsystem, LaunchDirection.DROP));
+    launchLow.whileTrue(new LaunchSequence(launcherSubsystem, indexerSubsystem, LaunchDirection.LOW));
+    launchHigh.whileTrue(new LaunchSequence(launcherSubsystem, indexerSubsystem, LaunchDirection.HIGH));
 
-    indexerIntake.whileTrue(new Index(indexerSubsystem, IndexDirection.INTAKE_RECKLESS)); //Reckless until sensor gets attatched.
+    indexerIntake.whileTrue(new Index(indexerSubsystem, IndexDirection.INTAKE_RECKLESS)); //Reckless
     indexerOuttake.whileTrue(new Index(indexerSubsystem, IndexDirection.OUTTAKE));
 
+  }
+
+  private void registerNamedCommands() {
+    NamedCommands.registerCommand("LaunchNoteLow", new LaunchSequence(launcherSubsystem, indexerSubsystem, LaunchDirection.LOW).deadlineWith(new WaitCommand(2.5)));
   }
 
   /**
@@ -97,10 +117,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
 
-   /*
+  
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return autoChooser.getSelected();
   }
-  */
 }

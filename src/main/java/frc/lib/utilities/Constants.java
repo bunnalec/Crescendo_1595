@@ -6,6 +6,9 @@ package frc.lib.utilities;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,7 +34,7 @@ public final class Constants {
     public static final int driverControllerPort = 0;
     public static final int operatorControllerPort = 1;
     public static final double stickDeadband = 0.1;
-    
+
     // Button names
     public static final int backLeftSingleSwitch = 1;
     public static final int topLeftToggleBack = 2;
@@ -76,7 +79,7 @@ public final class Constants {
     public static final int topSpinnerMotorCANId = 17;
   }
 
-  public static final class SystemIdentificationToggles {
+  public static final class SystemToggles {
     public static final boolean systemIdentification = false;
   }
   
@@ -96,6 +99,8 @@ public final class Constants {
              new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
              new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
              new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+
+          public static final double driveBaseRadius = new Translation2d(wheelBase / 2.0, trackWidth / 2.0).getNorm();
   
          /* Module Gear Ratios */
          public static final double driveGearRatio = chosenModule.driveGearRatio;
@@ -206,5 +211,14 @@ public final class Constants {
          public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
              new TrapezoidProfile.Constraints(
                  kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+    
+
+          public static final HolonomicPathFollowerConfig pathPlannerConfig = new HolonomicPathFollowerConfig(
+            new PIDConstants(AutoConstants.kPXController, 0, 0),
+            new PIDConstants(AutoConstants.kPThetaController, 0, 0),
+            SwerveConstants.maxSpeed,
+            SwerveConstants.driveBaseRadius,
+            new ReplanningConfig(false, false));
      }
 }

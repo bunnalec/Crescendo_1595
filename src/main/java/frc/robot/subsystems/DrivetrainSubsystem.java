@@ -5,6 +5,10 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,13 +24,15 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.lib.math.Conversions;
+import frc.lib.utilities.Conversions;
+import frc.lib.utilities.Constants.AutoConstants;
 import frc.lib.utilities.Constants.SwerveConstants;
 import frc.lib.utilities.swerve.COTSTalonFXSwerveConstants.SDS.MK4;
 import frc.lib.utilities.swerve.SwerveModule;
@@ -58,7 +64,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
     };
     
     swerveDriveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
-    createSytemIdentificationRoutine();
+    //createSytemIdentificationRoutine();
+
+    AutoBuilder.configureHolonomic(
+      this::getPose,
+      this::resetHeading,
+      this::getChassisSpeeds,
+      this::drive,
+      AutoConstants.pathPlannerConfig,
+      () -> {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this);
   }
 
   public void drive(Translation2d translation, double anglularVelocity, boolean fieldRelative, boolean isOpenLoop) {
@@ -80,6 +101,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
       for (SwerveModule module : swerveModules) {
         module.setDesiredState(swerveModuleStates[module.moduleNumber], isOpenLoop);
       }
+  }
+
+  public void drive (ChassisSpeeds chassisSpeeds) {
+    SwerveModuleState[] swerveModuleStates =
+      SwerveConstants.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
+
+    for (SwerveModule module : swerveModules) {
+      module.setDesiredState(swerveModuleStates[module.moduleNumber], false);
+    }
   }
 
   // Used by SwerveControllerCommand in Auto
@@ -129,6 +160,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public void zeroHeading() {
     swerveDriveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+  }
+
+  public void resetHeading(Pose2d pose) {
+    swerveDriveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+  }
+
+  public ChassisSpeeds getChassisSpeeds() {
+    return SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
   }
 
   public Rotation2d getGyroYaw() {
