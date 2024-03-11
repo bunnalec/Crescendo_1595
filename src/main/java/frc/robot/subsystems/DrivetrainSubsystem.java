@@ -64,7 +64,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     };
     
     swerveDriveOdometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
-    //createSytemIdentificationRoutine();
+    createSytemIdentificationRoutine();
 
     AutoBuilder.configureHolonomic(
       this::getPose,

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.lib.utilities.Constants;
 import frc.lib.utilities.Constants.*;
 
 import frc.robot.commands.TeleopDrive;
@@ -77,7 +78,6 @@ public class RobotContainer {
   private void configureBindings() {
 
     //The keybinds and commands for system identification only load if the mode is enabled in constants (for programming purposes).
-    /*
     if (Constants.SystemToggles.systemIdentification) {
       JoystickButton driveQuasiForward = new JoystickButton(driver, XboxController.Button.kBack.value);
       JoystickButton driveQuasiBackward = new JoystickButton(driver, XboxController.Button.kStart.value);
@@ -93,7 +93,7 @@ public class RobotContainer {
       //No Other Keybinds will Load in System Identification Mode, for no other keybinds will be assigned to actions.
       return;
     }
-    */
+    
 
     //Keybinds for... actually driving the robot in TeleOP.
     zeroGyro.onTrue(new InstantCommand(() -> drivetrainSubsystem.zeroHeading()));
