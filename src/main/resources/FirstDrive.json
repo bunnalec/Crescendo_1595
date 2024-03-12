@@ -1,0 +1,25 @@
+{
+  "start": {
+    // This might always need to be (0,0) to denote that it's starting
+    // with an 0 length translation vector pointing "forward"
+    "translation": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "rotation": {
+      "radians": 0.0
+    }
+  },
+  "waypoints": [
+    { "x": 0.5, "y": 0.2 }
+  ],
+  "end": {
+    "translation": {
+      "x": 1.0,
+      "y": 0.0
+    },
+    "rotation": {
+      "radians": 0.4
+    }
+  }
+}

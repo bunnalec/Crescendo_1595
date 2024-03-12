@@ -4,22 +4,23 @@
 
 package frc.robot;
 
-import frc.lib.utilities.Constants;
-import frc.lib.utilities.Constants.*;
-
-import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.Index.IndexDirection;
-import frc.robot.commands.Launch.LaunchDirection;
-import frc.robot.commands.Index;
-import frc.robot.commands.Launch;
-import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.IndexerSubsystem;
-import frc.robot.subsystems.LauncherSubsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.utilities.Constants;
+import frc.lib.utilities.Constants.OperatorConstants;
+import frc.robot.commands.AutoDrive;
+import frc.robot.commands.Index;
+import frc.robot.commands.Index.IndexDirection;
+import frc.robot.commands.Launch;
+import frc.robot.commands.Launch.LaunchDirection;
+import frc.robot.commands.TeleopDrive;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.LauncherSubsystem;
 
 public class RobotContainer {
   private final DrivetrainSubsystem drivetrainSubsystem = new DrivetrainSubsystem();
@@ -96,11 +97,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-
-   /*
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return new AutoDrive(drivetrainSubsystem, launcherSubsystem, indexerSubsystem);
   }
-  */
 }
