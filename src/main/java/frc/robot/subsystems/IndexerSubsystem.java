@@ -39,8 +39,8 @@ public class IndexerSubsystem extends SubsystemBase{
 
     public void indexNoteIntake() {
         if (!noteLoaded) {
-            indexerMotor.set(1.0);
-            indexerMotorTwo.set(1.0);
+            indexerMotor.set(0.25);
+            indexerMotorTwo.set(0.25);
             return;
         }
 
@@ -49,19 +49,19 @@ public class IndexerSubsystem extends SubsystemBase{
     }
 
     public void indexNoteOuttake() {
-        indexerMotor.set(-1.0);
-        indexerMotorTwo.set(-1.0);
+        indexerMotor.set(-0.25);
+        indexerMotorTwo.set(-0.25);
     }
 
     public void indexNoteLaunch() {
-        indexerMotor.set(1.0);
-        indexerMotorTwo.set(1.0);
+        indexerMotor.set(0.25);
+        indexerMotorTwo.set(0.25);
     }
 
     //Used for Testing Purposes
     public void indexNoteIntakeDisregardLoading() {
-        indexerMotor.set(1.0);
-        indexerMotorTwo.set(1.0);
+        indexerMotor.set(0.25);
+        indexerMotorTwo.set(0.25);
     }
     
     @Override
